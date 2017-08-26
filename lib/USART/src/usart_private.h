@@ -32,6 +32,21 @@ THE SOFTWARE.
 #define BAUD USART_BAUDRATE
 #include <util/setbaud.h>
 
+// Default RX/TX buffer size
+#ifndef USART_BUFFER_RX
+#define USART_BUFFER_RX 64
+// TODO static assert power of two?
+#endif
+#ifndef USART_BUFFER_TX
+#define USART_BUFFER_TX 64
+#endif
+
+// Interrupts are used with buffers
+#if (USART_BUFFER_RX) || (USART_BUFFER_TX)
+#include <avr/interrupt.h>
+#include <util/atomic.h>
+#endif
+
 #ifndef F_CPU
     #error "F_CPU not defined"
 #endif
@@ -86,6 +101,7 @@ int usart_fgetc(FILE *stream);
 #define USART_RXEN          RXEN1
 #define USART_TXEN          TXEN1
 #define USART_UDRE          UDRE1
+#define USART_RXCIE         RXCIE1
 #define USART_RXC           RXC1
 #define USART_U2X           U2X1
 #define USART_UCSZ0         UCSZ10
@@ -95,6 +111,10 @@ int usart_fgetc(FILE *stream);
 #define USART_UPM0          UPM0
 #define USART_UPM1          UPM1
 #undef USART_URSEL
+
+// Interrupt vectors
+#define USART_RX_VECT       USART1_RX_vect
+#define USART_TX_VECT       USART1_TX_vect
 
 #else
 #error "Unsupported MCU"

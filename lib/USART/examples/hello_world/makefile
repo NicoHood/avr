@@ -8,7 +8,7 @@
 
 # Run "make help" for target help.
 MCU          = atmega32u4
-BOARD		 = ARDUINO_LEONARDO
+BOARD        = ARDUINO_LEONARDO
 ARCH         = AVR8
 F_CPU        = 16000000
 OPTIMIZATION = s
@@ -18,10 +18,12 @@ CC_FLAGS     = -Werror
 LD_FLAGS     = -Werror
 
 # Module settings
-USART_BAUDRATE	= 9600
+USART_BAUDRATE    = 2000000
+#USART_BAUDRATE    = 115200
+#USART_BAUDRATE    = 9600
 
 # Include DMBS build script makefiles
-ROOT_PATH 	?= ../../../../
+ROOT_PATH   ?= ../../../../
 DMBS_PATH   ?= $(ROOT_PATH)/DMBS
 LIB_PATH    ?= $(ROOT_PATH)/lib
 

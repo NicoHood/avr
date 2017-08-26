@@ -27,14 +27,17 @@ THE SOFTWARE.
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #include "usart.h"
 
 int main(void)
 {
-    // Initialize usart and stdout
+    // Initialize usart and enable global interrupts
     usart_init();
+    sei();
 
     // Write directly to usarts
     usart_puts("Hello Usart!");
@@ -55,7 +58,13 @@ int main(void)
     // Echo incoming bytes
     while(true)
     {
-        char c = getchar();
-        putchar(c);
+        int c = getchar();
+        if(c >= 0)
+        {
+            putchar(c);
+        }
+
+        // Use delay here to test if serial RX buffer is working properly at high speeds
+        //_delay_ms(10);
     }
 }

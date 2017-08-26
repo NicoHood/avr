@@ -42,11 +42,16 @@ void usart_init(void)
 #endif
 
     USART_UCSRC = (USART_PARITY | USART_STOP_BITS | USART_DATA_BITS);
+
+	// Determine UCSRB value based on selected compile-time options
+	uint8_t USART_UCSRB_VAL = ((1 << USART_RXEN) | (1 << USART_TXEN));
 #if defined(USART_URSEL)
-	USART_UCSRB = ((1 << USART_URSEL) | (1 << USART_RXEN) | (1 << USART_TXEN));
-#else
-	USART_UCSRB = ((1 << USART_RXEN) | (1 << USART_TXEN));
+	USART_UCSRB_VAL |= (1 << USART_URSEL);
 #endif
+#if (USART_BUFFER_RX)
+	USART_UCSRB_VAL |= (1 << USART_RXCIE);
+#endif
+	USART_UCSRB = USART_UCSRB_VAL;
 }
 
 void usart_putchar(const char c)
@@ -70,7 +75,7 @@ void usart_puts_P(const char *s)
 {
 	// Loop through entire string and append a carriage return
 	char c;
-	while((c = pgm_read_byte(s)))
+	while ((c = pgm_read_byte(s)))
 	{
 		usart_putchar(c);
 		s++;
@@ -78,12 +83,60 @@ void usart_puts_P(const char *s)
 	usart_putchar('\n');
 }
 
-char usart_getchar(void)
+#if (USART_BUFFER_RX)
+static volatile uint8_t usart_buffer_rx[USART_BUFFER_RX] = {};
+static volatile uint8_t usart_buffer_rx_head = 0;
+static volatile uint8_t usart_buffer_rx_tail = 0;
+
+ISR(USART_RX_VECT)
 {
-	// Wait for new byte and return it
-    while(!(USART_UCSRA & (1 << USART_RXC)));
-    return USART_UDR;
+	// Read byte
+	char c = USART_UDR;
+
+	// TODO check Parity error if enabled
+	// bit_is_clear(*_ucsra, UPE0)
+
+	// Discard data if buffer is full
+	uint8_t new_index = ((uint8_t)(usart_buffer_rx_head + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
+	if (new_index == usart_buffer_rx_tail)
+	{
+		return;
+	}
+
+	// Safe data and increment head
+	usart_buffer_rx[usart_buffer_rx_head] = c;
+	usart_buffer_rx_head = new_index;
 }
+
+int usart_getchar(void)
+{
+	int ret;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		// Check if more data is available
+		if (usart_buffer_rx_head == usart_buffer_rx_tail)
+		{
+			ret = -1;
+		}
+		else{
+			ret = usart_buffer_rx[usart_buffer_rx_tail];
+			usart_buffer_rx_tail = ((uint8_t)(usart_buffer_rx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
+		}
+	}
+	return ret;
+}
+
+#else // !(USART_BUFFER_RX)
+int usart_getchar(void)
+{
+	// Check for new byte and return it
+	if (USART_UCSRA & (1 << USART_RXC))
+	{
+		return USART_UDR;
+	}
+	return -1;
+}
+#endif
 
 int usart_fputc(char c, FILE *stream)
 {

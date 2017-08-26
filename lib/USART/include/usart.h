@@ -38,7 +38,7 @@ void usart_init(void);
 void usart_putchar(const char c);
 void usart_puts(const char *s);
 void usart_puts_P(const char *s);
-char usart_getchar(void);
+int usart_getchar(void);
 
 // stdio functions
 void usart_init_stdout(void);
