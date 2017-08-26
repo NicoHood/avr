@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
+#include <assert.h>
 
 // setbaud.h will pull in UBRRH_VALUE, UBRRL_VALUE and USE_2X
 #define BAUD USART_BAUDRATE
@@ -35,11 +36,18 @@ THE SOFTWARE.
 // Default RX/TX buffer size
 #ifndef USART_BUFFER_RX
 #define USART_BUFFER_RX 64
-// TODO static assert power of two?
 #endif
 #ifndef USART_BUFFER_TX
 #define USART_BUFFER_TX 64
 #endif
+
+// Check buffer size limits
+// TODO rename to static_assert() when avr-libc >2.0.0 gets released
+// https://savannah.nongnu.org/bugs/?41689
+_Static_assert(USART_BUFFER_RX < (1 << 8) && USART_BUFFER_RX >= 0,
+    "USART_BUFFER_RX is an unsigned 8bit value. Please choose 8, 16, 32, 64, 128 or 255");
+_Static_assert(USART_BUFFER_TX < (1 << 8) && USART_BUFFER_TX >= 0,
+    "USART_BUFFER_TX is an unsigned 8bit value. Please choose 8, 16, 32, 64, 128 or 255");
 
 // Interrupts are used with buffers
 #if (USART_BUFFER_RX) || (USART_BUFFER_TX)
