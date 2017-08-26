@@ -14,8 +14,8 @@ F_CPU        = 16000000
 OPTIMIZATION = s
 TARGET       = hello_world
 SRC          = $(TARGET).c
-#CC_FLAGS     = -Werror
-#LD_FLAGS     = -Werror TODO
+CC_FLAGS     = -Werror
+LD_FLAGS     = -Werror
 
 # Module settings
 USART_BAUDRATE	= 9600

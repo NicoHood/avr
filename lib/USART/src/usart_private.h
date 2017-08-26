@@ -24,10 +24,13 @@ THE SOFTWARE.
 // Include Guard
 #pragma once
 
-#include <stdbool.h> // TODO rem
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
+
+// setbaud.h will pull in UBRRH_VALUE, UBRRL_VALUE and USE_2X
+#define BAUD USART_BAUDRATE
+#include <util/setbaud.h>
 
 #ifndef F_CPU
     #error "F_CPU not defined"
@@ -43,9 +46,6 @@ int usart_fgetc(FILE *stream);
 #endif
 
 // Default settings
-#ifndef USART_USE_2X
-#define USART_USE_2X    1
-#endif
 #ifndef USART_DATA_BITS
 #define USART_DATA_BITS USART_DATA_BITS_8
 #endif
@@ -54,13 +54,6 @@ int usart_fgetc(FILE *stream);
 #endif
 #ifndef USART_PARITY
 #define USART_PARITY    USART_PARITY_NO
-#endif
-
-// Usart prescale speed, dependant on U2X mode
-#if defined(USART_USE_2X)
-#define USART_BAUD_PRESCALE (((( F_CPU / 8) + (USART_BAUDRATE / 2)) / (USART_BAUDRATE)) - 1)
-#else
-#define USART_BAUD_PRESCALE (((( F_CPU / 16) + (USART_BAUDRATE / 2)) / (USART_BAUDRATE)) - 1)
 #endif
 
 // Data bits

@@ -32,10 +32,10 @@ static FILE usart_io = FDEV_SETUP_STREAM(usart_fputc, usart_fgetc, _FDEV_SETUP_R
 
 void usart_init(void)
 {
-    USART_UBRRH = (USART_BAUD_PRESCALE >> 8);
-    USART_UBRRL = USART_BAUD_PRESCALE;
+    USART_UBRRH = UBRRH_VALUE;
+    USART_UBRRL = UBRRL_VALUE;
 
-#if (USART_USE_2X)
+#if (USE_2X)
     USART_UCSRA |= (1 << USART_U2X);
 #else
     USART_UCSRA &= ~(1 << USART_U2X);
