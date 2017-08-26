@@ -31,6 +31,7 @@ extern "C" {
 #define USART_VERSION 100
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 
 // Function prototypes
@@ -39,6 +40,8 @@ void usart_putchar(const char c);
 void usart_puts(const char *s);
 void usart_puts_P(const char *s);
 int usart_getchar(void);
+int usart_peek(void);
+bool usart_avail(void);
 
 // stdio functions
 void usart_init_stdout(void);

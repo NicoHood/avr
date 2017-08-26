@@ -126,6 +126,40 @@ int usart_getchar(void)
 	return ret;
 }
 
+int usart_peek(void)
+{
+	int ret;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		// Check if more data is available
+		if (usart_buffer_rx_head == usart_buffer_rx_tail)
+		{
+			ret = -1;
+		}
+		else{
+			ret = usart_buffer_rx[usart_buffer_rx_tail];
+		}
+	}
+	return ret;
+}
+
+bool usart_avail(void)
+{
+	bool ret;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		// Check if more data is available
+		if (usart_buffer_rx_head == usart_buffer_rx_tail)
+		{
+			ret = false;
+		}
+		else{
+			ret = true;
+		}
+	}
+	return ret;
+}
+
 #else // !(USART_BUFFER_RX)
 int usart_getchar(void)
 {
@@ -135,6 +169,22 @@ int usart_getchar(void)
 		return USART_UDR;
 	}
 	return -1;
+}
+
+int usart_peek(void)
+{
+	// Impossible without buffers
+	return -1;
+}
+
+bool usart_avail(void)
+{
+	// Check for new byte and return it
+	if (USART_UCSRA & (1 << USART_RXC))
+	{
+		return true;
+	}
+	return false;
 }
 #endif
 
