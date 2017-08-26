@@ -1,0 +1,9 @@
+[submodule "submodules/dmbs"]
+	path = submodules/dmbs
+	url = https://github.com/abcminiuser/dmbs.git
+[submodule "submodules/FastLED"]
+	path = submodules/FastLED
+	url = https://github.com/FastLED/FastLED.git
+[submodule "submodules/lufa"]
+	path = submodules/lufa
+	url = https://github.com/abcminiuser/lufa.git
