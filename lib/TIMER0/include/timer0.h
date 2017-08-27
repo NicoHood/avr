@@ -55,7 +55,7 @@ extern "C" {
 
 #include <stdint.h>
 
-extern void init_timer0(void);
+extern void timer0_init(void);
 
 extern void delay(uint32_t);
 

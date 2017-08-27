@@ -111,7 +111,7 @@ void blink_without_delay2(void)
 int main(void)
 {
     // Initialize timer and enable interrupts
-    init_timer0();
+    timer0_init();
     sei();
 
     // Choose blink function

@@ -47,7 +47,7 @@ THE SOFTWARE.
 #include "timer0.h"
 #include "timer0_private.h"
 
-void init_timer0(void)
+void timer0_init(void)
 {
 	// Timer 0, fast pwm mode
 	TCCR0A = (1<<WGM01) | (1<<WGM00);

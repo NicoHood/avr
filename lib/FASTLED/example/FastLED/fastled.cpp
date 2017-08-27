@@ -41,7 +41,7 @@ CRGB leds[NUM_LEDS];
 int main(void)
 {
     // Initialize timer and enable interrupts
-    init_timer0();
+    timer0_init();
     sei();
 
     // Uncomment/edit one of the following lines for your leds arrangement.
