@@ -94,7 +94,7 @@ int usart_fgetc(FILE *stream);
 #define USART_PARITY_EVEN   (1 << USART_UPM1)
 #define USART_PARITY_ODD    ((1 << USART_UPM1) | (1 << USART_UPM0))
 
-#if defined(__AVR_ATmega32U4__)
+#if defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega16U4__)
 
 // Register mapping
 #define USART_UBRRH         UBRR1H
@@ -112,7 +112,11 @@ int usart_fgetc(FILE *stream);
 #define USART_U2X           U2X1
 
 // Bit mapping UCSRnB
+#ifndef URSEL
 #undef USART_URSEL
+#else
+#define USART_URSEL         URSEL
+#endif
 #define USART_RXCIE         RXCIE1
 #define USART_UDRIE         UDRIE1
 #define USART_RXEN          RXEN1
@@ -129,6 +133,46 @@ int usart_fgetc(FILE *stream);
 // Interrupt vectors
 #define USART_RX_VECT       USART1_RX_vect
 #define USART_UDRE_VECT     USART1_UDRE_vect
+
+#elif defined(__AVR_ATmega328__) || defined(__AVR_ATmega128__) || defined(__AVR_ATmega328P__)
+
+// Register mapping
+#define USART_UBRRH         UBRR0H
+#define USART_UBRRL         UBRR0L
+#define USART_UCSRA         UCSR0A
+#define USART_UCSRB         UCSR0B
+#define USART_UCSRC         UCSR0C
+#define USART_UDR           UDR0
+
+// Bit mapping UCSRnA
+#define USART_RXC           RXC0
+#define USART_TXC           TXC0
+#define USART_UDRE          UDRE0
+#define USART_UPE           UPE0
+#define USART_U2X           U2X0
+
+// Bit mapping UCSRnB
+#ifndef URSEL
+#undef USART_URSEL
+#else
+#define USART_URSEL         URSEL
+#endif
+#define USART_RXCIE         RXCIE0
+#define USART_UDRIE         UDRIE0
+#define USART_RXEN          RXEN0
+#define USART_TXEN          TXEN0
+
+// Bit mapping UCSRnC
+#define USART_UPM0          UPM0
+#define USART_UPM1          UPM0
+#define USART_USBS          USBS
+#define USART_UCSZ0         UCSZ00
+#define USART_UCSZ1         UCSZ01
+#define USART_UCSZ2         UCSZ02
+
+// Interrupt vectors
+#define USART_RX_VECT       USART_RX_vect
+#define USART_UDRE_VECT     USART_UDRE_vect
 
 #else
 #error "Unsupported MCU"

@@ -7,8 +7,8 @@
 #
 
 # Run "make help" for target help.
-MCU          = atmega32u4
-BOARD        = ARDUINO_LEONARDO
+MCU          = atmega328p
+BOARD        = ARDUINO_UNO
 ARCH         = AVR8
 F_CPU        = 16000000
 OPTIMIZATION = s
