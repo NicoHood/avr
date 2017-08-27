@@ -89,7 +89,7 @@ void usart_putchar(const char c)
     // No atomic block is required, as only the tail gets incremented inside the ISR, head untouched
     // The head is safed in a temporary variable to safe a bit more flash
     uint8_t head = usart_buffer_tx_head;
-    if ((usart_buffer_tx_head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
+    if ((head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
     {
         // Send byte and clear Tx flag. This Flag is required for the flush function
         // to work properly when this shortcut was used
