@@ -110,9 +110,9 @@ void usart_putchar(const char c)
         uint8_t new_index = ((uint8_t)(head + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
         while (new_index == usart_buffer_tx_tail)
         {
+            // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
             if (!(SREG & (1 << SREG_I)))
             {
-                // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
                 while(!(USART_UCSRA & (1 << USART_UDRE)));
                 USART_UDRE_VECT();
             }
@@ -129,6 +129,23 @@ void usart_putchar(const char c)
 #endif
 }
 
+void usart_flush(void)
+{
+    // Wait until all data inside the buffer was sent
+    while (usart_buffer_tx_head != usart_buffer_tx_tail)
+    {
+        // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
+        if (!(SREG & (1 << SREG_I)))
+        {
+            while(!(USART_UCSRA & (1 << USART_UDRE)));
+            USART_UDRE_VECT();
+        }
+    }
+
+    // Wait for the final byte to flush
+    while(!(USART_UCSRA & (1 << USART_UDRE)));
+}
+
 #else
 void usart_putchar(const char c)
 {
@@ -143,7 +160,33 @@ void usart_putchar(const char c)
     }
 #endif
 }
+
+void usart_flush(void)
+{
+    // Wait for empty transmit buffer
+    while(!(USART_UCSRA & (1 << USART_UDRE)));
+}
 #endif
+
+void usart_write(const uint8_t* buff, size_t len)
+{
+    // Write buffer to usart
+    while(len--)
+    {
+        usart_putchar(*buff);
+        buff++;
+    }
+}
+
+void usart_write_P(const uint8_t* buff, size_t len)
+{
+    // Write buffer to usart
+    while(len--)
+    {
+		usart_putchar(pgm_read_byte(buff));
+        buff++;
+    }
+}
 
 void usart_puts(const char *s)
 {

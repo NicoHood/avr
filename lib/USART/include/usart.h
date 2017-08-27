@@ -31,23 +31,29 @@ extern "C" {
 #define USART_VERSION 100
 
 #include <stdint.h>
+#include <stddef.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-// Function prototypes
+// Initialize
 void usart_init(void);
-void usart_putchar(const char c);
-void usart_puts(const char *s);
-void usart_puts_P(const char *s);
-int usart_getchar(void);
-int usart_peek(void);
-bool usart_avail(void);
-
-// stdio functions
 void usart_init_stdout(void);
 void usart_init_stdin(void);
 void usart_init_stderr(void);
 void usart_init_stdio(void);
+
+// Transmit
+void usart_putchar(const char c);
+void usart_flush(void);
+void usart_write(const uint8_t* buff, size_t len);
+void usart_write_P(const uint8_t* buff, size_t len);
+void usart_puts(const char *s);
+void usart_puts_P(const char *s);
+
+// Receive
+int usart_getchar(void);
+int usart_peek(void);
+bool usart_avail(void);
 
 #ifdef __cplusplus
 }

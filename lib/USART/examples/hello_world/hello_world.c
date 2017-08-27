@@ -29,9 +29,14 @@ THE SOFTWARE.
 #include <stdbool.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <string.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
 #include "usart.h"
+#include "board_leds.h"
+
+// PROGMEM variables
+const char PROGMEM str_P[] = "This is a test string as character array in PROGMEM.\n";
 
 int main(void)
 {
@@ -41,7 +46,12 @@ int main(void)
 
     // Write directly to usarts
     usart_puts("Hello Usart!");
-    usart_puts_P(PSTR("Hello Usart Progmem!"));
+    usart_puts_P(PSTR("Hello Usart PROGMEM!"));
+
+    // Print raw data
+    char str[] = "This is a test string as character array.\n";
+    usart_write((uint8_t*)str, strlen(str));
+    usart_write_P((uint8_t*)str_P, strlen_P(str_P));
 
     // Setup stdio functionallity
     usart_init_stdout();
@@ -52,8 +62,14 @@ int main(void)
     printf("Printf can print HEX %X and DEC %d\n", 1337, 1337);
 
     // Safe RAM by using PROGMEM
-    puts_P(PSTR("Hello stdio Progmem!"));
+    puts_P(PSTR("Hello stdio PROGMEM!"));
     printf_P(PSTR("Printf_P can also print HEX %X and DEC %d\n"), 1337, 1337);
+
+    // Flush data and check for led how long flushing takes. Try with baud rate 300.
+    LED_INIT();
+    LED_ON();
+    usart_flush();
+    LED_OFF();
 
     // Echo incoming bytes
     while(true)
