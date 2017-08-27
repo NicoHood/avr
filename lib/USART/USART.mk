@@ -39,15 +39,19 @@ $(error Include this module before gcc.mk)
 endif
 
 # Default values of optionally user-supplied variables
-USART_DATA_BITS ?=
-USART_STOP_BITS ?=
-USART_PARITY    ?=
+USART_DATA_BITS     ?=
+USART_STOP_BITS     ?=
+USART_PARITY        ?=
+USART_BUFFER_RX     ?=
+USART_BUFFER_TX     ?=
+USART_THREAD_SAFE   ?=
 
 # Help settings
 DMBS_BUILD_MODULES         += USART
 DMBS_BUILD_TARGETS         +=
 DMBS_BUILD_MANDATORY_VARS  += DMBS_PATH USART_BAUDRATE
 DMBS_BUILD_OPTIONAL_VARS   += USART_DATA_BITS USART_STOP_BITS USART_PARITY
+DMBS_BUILD_OPTIONAL_VARS   += USART_BUFFER_RX USART_BUFFER_TX USART_THREAD_SAFE
 DMBS_BUILD_PROVIDED_VARS   += USART_SRC
 DMBS_BUILD_PROVIDED_MACROS +=
 
@@ -72,6 +76,15 @@ CC_FLAGS           += -DUSART_STOP_BITS=$(USART_STOP_BITS)
 endif
 ifneq ($(USART_PARITY), )
 CC_FLAGS           += -DUSART_PARITY=$(USART_PARITY)
+endif
+ifneq ($(USART_BUFFER_RX), )
+CC_FLAGS           += -DUSART_BUFFER_RX=$(USART_BUFFER_RX)
+endif
+ifneq ($(USART_BUFFER_TX), )
+CC_FLAGS           += -DUSART_BUFFER_TX=$(USART_BUFFER_TX)
+endif
+ifneq ($(USART_THREAD_SAFE), )
+CC_FLAGS           += -DUSART_THREAD_SAFE=$(USART_THREAD_SAFE)
 endif
 
 # Phony build targets for this module
