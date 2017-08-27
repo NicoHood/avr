@@ -29,6 +29,12 @@ THE SOFTWARE.
 #include <avr/pgmspace.h>
 #include <assert.h>
 
+// Settings sample
+//#define USART_BAUDRATE 2000000
+//#define USART_BAUDRATE 115200
+//#define USART_BAUDRATE 9600
+//#define USART_THREAD_SAFE
+
 // setbaud.h will pull in UBRRH_VALUE, UBRRL_VALUE and USE_2X
 #define BAUD USART_BAUDRATE
 #include <util/setbaud.h>
@@ -105,24 +111,30 @@ int usart_fgetc(FILE *stream);
 #define USART_UCSRC         UCSR1C
 #define USART_UDR           UDR1
 
-// Bit mapping
+// Bit mapping UCSRnA
+#define USART_RXC           RXC1
+#define USART_TXC           TXC1
+#define USART_UDRE          UDRE1
+#define USART_U2X           U2X1
+
+// Bit mapping UCSRnB
+#undef USART_URSEL
+#define USART_RXCIE         RXCIE1
+#define USART_UDRIE         UDRIE1
 #define USART_RXEN          RXEN1
 #define USART_TXEN          TXEN1
-#define USART_UDRE          UDRE1
-#define USART_RXCIE         RXCIE1
-#define USART_RXC           RXC1
-#define USART_U2X           U2X1
+
+// Bit mapping UCSRnC
+#define USART_UPM0          UPM0
+#define USART_UPM1          UPM1
+#define USART_USBS          USBS
 #define USART_UCSZ0         UCSZ10
 #define USART_UCSZ1         UCSZ11
 #define USART_UCSZ2         UCSZ12
-#define USART_USBS          USBS
-#define USART_UPM0          UPM0
-#define USART_UPM1          UPM1
-#undef USART_URSEL
 
 // Interrupt vectors
 #define USART_RX_VECT       USART1_RX_vect
-#define USART_TX_VECT       USART1_TX_vect
+#define USART_UDRE_VECT     USART1_UDRE_vect
 
 #else
 #error "Unsupported MCU"
