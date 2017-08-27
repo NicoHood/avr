@@ -66,9 +66,8 @@ ISR(USART_UDRE_VECT)
     uint8_t c = usart_buffer_tx[usart_buffer_tx_tail];
     usart_buffer_tx_tail = ((uint8_t)(usart_buffer_tx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
 
-    // Send byte and clear Tx flag. See comment in usart_putchar() for more details
+    // Send byte and clear Tx flag.
     USART_UDR = c;
-    USART_UCSRA |= (1 << USART_TXC);
 
     // Diable usart tx interrupt if all bytes were transmitted
     if (usart_buffer_tx_head == usart_buffer_tx_tail)
@@ -91,19 +90,9 @@ void usart_putchar(const char c)
     uint8_t head = usart_buffer_tx_head;
     if ((head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
     {
-        // Send byte and clear Tx flag. This Flag is required for the flush function
-        // to work properly when this shortcut was used
-        // Use an atomic block to ensure the flag gets cleared before the byte is already sent.
-        // Also see https://github.com/arduino/Arduino/commit/0be4e8cd3cbc6216ff01cd83282b1231639f9b60
-#ifndef USART_THREAD_SAFE
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-        {
-#endif
-            USART_UDR = c;
-            USART_UCSRA |= (1 << USART_TXC);
-#ifndef USART_THREAD_SAFE
-        }
-#endif
+        // Send byte. TXC bit will not be used here.
+        // See: https://github.com/arduino/Arduino/commit/ccd8880a37261b53ae11c666de0a29d85c28ae36
+        USART_UDR = c;
     }
     else{
         // If buffer is full, wait for it to get emptied by interrupt
