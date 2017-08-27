@@ -35,6 +35,22 @@ extern "C" {
 #include <stdbool.h>
 #include <stdio.h>
 
+// Default RX/TX buffer size
+#ifndef USART_BUFFER_RX
+#define USART_BUFFER_RX 64
+#endif
+#ifndef USART_BUFFER_TX
+#define USART_BUFFER_TX 64
+#endif
+
+// Mark reading functions depreciated with no RX buffer set
+#if USART_BUFFER_RX
+#define USART_DEPRECIATED
+#else
+#define USART_DEPRECIATED __attribute__ \
+    ((deprecated ("Receiving data without RX buffers will likely cause corrupted data")))
+#endif
+
 // Initialize
 void usart_init(void);
 void usart_init_stdout(void);
@@ -51,9 +67,9 @@ void usart_puts(const char *s);
 void usart_puts_P(const char *s);
 
 // Receive
-int usart_getchar(void);
-int usart_peek(void);
-uint8_t usart_avail_read(void);
+int usart_getchar(void) USART_DEPRECIATED;
+int usart_peek(void) USART_DEPRECIATED;
+uint8_t usart_avail_read(void) USART_DEPRECIATED;
 size_t usart_read(uint8_t* buff, size_t len);
 
 #ifdef __cplusplus

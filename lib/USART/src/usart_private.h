@@ -29,6 +29,7 @@ THE SOFTWARE.
 #include <avr/pgmspace.h>
 #include <util/atomic.h>
 #include <assert.h>
+#include "usart.h"
 
 // Settings sample
 //#define USART_BAUDRATE 2000000
@@ -39,14 +40,6 @@ THE SOFTWARE.
 // setbaud.h will pull in UBRRH_VALUE, UBRRL_VALUE and USE_2X
 #define BAUD USART_BAUDRATE
 #include <util/setbaud.h>
-
-// Default RX/TX buffer size
-#ifndef USART_BUFFER_RX
-#define USART_BUFFER_RX 64
-#endif
-#ifndef USART_BUFFER_TX
-#define USART_BUFFER_TX 64
-#endif
 
 // Check buffer size limits
 // TODO rename to static_assert() when avr-libc >2.0.0 gets released
