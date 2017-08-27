@@ -174,11 +174,18 @@ static volatile uint8_t usart_buffer_rx_tail = 0;
 
 ISR(USART_RX_VECT)
 {
+    // Check for parity errors
+#if (USART_PARITY != USART_PARITY_NO)
+    if (USART_UCSRA & (1 << USART_UPE))
+    {
+        // Discard byte
+        char discard = USART_UDR;
+        return;
+    }
+#endif
+
     // Read byte
     char c = USART_UDR;
-
-    // TODO check Parity error if enabled
-    // bit_is_clear(*_ucsra, UPE0)
 
     // Discard data if buffer is full
     uint8_t new_index = ((uint8_t)(usart_buffer_rx_head + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);

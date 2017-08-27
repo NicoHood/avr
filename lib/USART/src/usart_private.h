@@ -115,6 +115,7 @@ int usart_fgetc(FILE *stream);
 #define USART_RXC           RXC1
 #define USART_TXC           TXC1
 #define USART_UDRE          UDRE1
+#define USART_UPE           UPE1
 #define USART_U2X           U2X1
 
 // Bit mapping UCSRnB
