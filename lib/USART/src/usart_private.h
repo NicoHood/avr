@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <avr/io.h>
 #include <stdio.h>
 #include <avr/pgmspace.h>
+#include <util/atomic.h>
 #include <assert.h>
 
 // Settings sample
@@ -58,7 +59,6 @@ _Static_assert(USART_BUFFER_TX < (1 << 8) && USART_BUFFER_TX >= 0,
 // Interrupts are used with buffers
 #if (USART_BUFFER_RX) || (USART_BUFFER_TX)
 #include <avr/interrupt.h>
-#include <util/atomic.h>
 #endif
 
 #ifndef F_CPU

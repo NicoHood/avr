@@ -55,12 +55,95 @@ void usart_init(void)
     USART_UCSRB = USART_UCSRB_VAL;
 }
 
+#if (USART_BUFFER_TX)
+static volatile uint8_t usart_buffer_tx[USART_BUFFER_TX] = {};
+static volatile uint8_t usart_buffer_tx_head = 0;
+static volatile uint8_t usart_buffer_tx_tail = 0;
+
+ISR(USART_UDRE_VECT)
+{
+    // Get next byte
+    uint8_t c = usart_buffer_tx[usart_buffer_tx_tail];
+    usart_buffer_tx_tail = ((uint8_t)(usart_buffer_tx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
+
+    // Send byte and clear Tx flag. See comment in usart_putchar() for more details
+    USART_UDR = c;
+    USART_UCSRA |= USART_TXC;
+
+    // Diable usart tx interrupt if all bytes were transmitted
+    if (usart_buffer_tx_head == usart_buffer_tx_tail)
+    {
+        USART_UCSRB &= ~(1 << USART_UDRIE);
+    }
+}
+
 void usart_putchar(const char c)
 {
-	// Wait for empty transmit buffer, then start transmission
-    while(!(USART_UCSRA & (1 << USART_UDRE)));
-    USART_UDR = c;
+#ifdef USART_THREAD_SAFE
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+#endif
+
+    // Send data directly if buffer is empty and transmit is ready
+    // This improves performance on higher baudrates to avoid the ISR overhead
+    // No atomic block is required, as only the tail gets incremented inside the ISR, head untouched
+    // The head is safed in a temporary variable to safe a bit more flash
+    uint8_t head = usart_buffer_tx_head;
+    if ((usart_buffer_tx_head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
+    {
+        // Send byte and clear Tx flag. This Flag is required for the flush function
+        // to work properly when this shortcut was used
+        // Use an atomic block to ensure the flag gets cleared before the byte is already sent.
+        // Also see https://github.com/arduino/Arduino/commit/0be4e8cd3cbc6216ff01cd83282b1231639f9b60
+#ifndef USART_THREAD_SAFE
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+        {
+#endif
+            USART_UDR = c;
+            USART_UCSRA |= USART_TXC;
+#ifndef USART_THREAD_SAFE
+        }
+#endif
+    }
+    else{
+        // If buffer is full, wait for it to get emptied by interrupt
+        uint8_t new_index = ((uint8_t)(head + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
+        while (new_index == usart_buffer_tx_tail)
+        {
+            if (!(SREG & (1 << SREG_I)))
+            {
+                // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
+                while(!(USART_UCSRA & (1 << USART_UDRE)));
+                USART_UDRE_VECT();
+            }
+        }
+
+        // Safe new byte and enable interrupts again
+        usart_buffer_tx[usart_buffer_tx_head] = c;
+        usart_buffer_tx_head = new_index;
+        USART_UCSRB |= (1 << USART_UDRIE);
+    }
+
+#ifdef USART_THREAD_SAFE
+    }
+#endif
 }
+
+#else
+void usart_putchar(const char c)
+{
+#ifdef USART_THREAD_SAFE
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+#endif
+        // Wait for empty transmit buffer, then start transmission
+        while(!(USART_UCSRA & (1 << USART_UDRE)));
+        USART_UDR = c;
+#ifdef USART_THREAD_SAFE
+    }
+#endif
+}
+#endif
 
 void usart_puts(const char *s)
 {
