@@ -12,16 +12,16 @@ BOARD        = ARDUINO_LEONARDO
 ARCH         = AVR8
 F_CPU        = 16000000
 OPTIMIZATION = s
-TARGET       = hello_world
+TARGET       = usart_test
 SRC          = $(TARGET).c
 CC_FLAGS     = -Werror
 LD_FLAGS     = -Werror
 
 # Module settings
-USART_BAUDRATE    = 2000000
+#USART_BAUDRATE    = 2000000
 #USART_BAUDRATE    = 115200
 #USART_BAUDRATE    = 9600
-#USART_BAUDRATE    = 300
+USART_BAUDRATE    = 300
 
 # Include DMBS build script makefiles
 ROOT_PATH   ?= ../../../../
