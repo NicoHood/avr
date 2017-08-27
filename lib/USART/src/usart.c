@@ -277,21 +277,12 @@ int usart_peek(void)
     return ret;
 }
 
-bool usart_avail(void)
+uint8_t usart_avail_read(void)
 {
-    bool ret;
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-    {
-        // Check if more data is available
-        if (usart_buffer_rx_head == usart_buffer_rx_tail)
-        {
-            ret = false;
-        }
-        else{
-            ret = true;
-        }
-    }
-    return ret;
+	// Return how many bytes are available for reading
+	// No atomic block required as 1byte access is already atomic and the tail value won't change.
+    return ((uint8_t)((uint8_t)USART_BUFFER_RX - (uint8_t)usart_buffer_rx_tail + \
+        (uint8_t)usart_buffer_rx_head) % (uint8_t)USART_BUFFER_RX);
 }
 
 #else // !(USART_BUFFER_RX)
@@ -311,14 +302,14 @@ int usart_peek(void)
     return -1;
 }
 
-bool usart_avail(void)
+uint8_t usart_avail_read(void)
 {
     // Check for new byte and return it
     if (USART_UCSRA & (1 << USART_RXC))
     {
-        return true;
+        return 1;
     }
-    return false;
+    return 0;
 }
 #endif
 

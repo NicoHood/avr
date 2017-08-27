@@ -53,7 +53,7 @@ void usart_puts_P(const char *s);
 // Receive
 int usart_getchar(void);
 int usart_peek(void);
-bool usart_avail(void);
+uint8_t usart_avail_read(void);
 
 #ifdef __cplusplus
 }
