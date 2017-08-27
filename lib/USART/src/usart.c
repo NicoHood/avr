@@ -38,20 +38,21 @@ void usart_init(void)
 #if (USE_2X)
     USART_UCSRA |= (1 << USART_U2X);
 #else
-    USART_UCSRA &= ~(1 << USART_U2X);
+    // No need to disable it, as dynamic baudrate change is not supported
+    //USART_UCSRA &= ~(1 << USART_U2X);
 #endif
 
     USART_UCSRC = (USART_PARITY | USART_STOP_BITS | USART_DATA_BITS);
 
-	// Determine UCSRB value based on selected compile-time options
-	uint8_t USART_UCSRB_VAL = ((1 << USART_RXEN) | (1 << USART_TXEN));
+    // Determine UCSRB value based on selected compile-time options
+    uint8_t USART_UCSRB_VAL = ((1 << USART_RXEN) | (1 << USART_TXEN));
 #if defined(USART_URSEL)
-	USART_UCSRB_VAL |= (1 << USART_URSEL);
+    USART_UCSRB_VAL |= (1 << USART_URSEL);
 #endif
 #if (USART_BUFFER_RX)
-	USART_UCSRB_VAL |= (1 << USART_RXCIE);
+    USART_UCSRB_VAL |= (1 << USART_RXCIE);
 #endif
-	USART_UCSRB = USART_UCSRB_VAL;
+    USART_UCSRB = USART_UCSRB_VAL;
 }
 
 void usart_putchar(const char c)
@@ -63,24 +64,24 @@ void usart_putchar(const char c)
 
 void usart_puts(const char *s)
 {
-	// Loop through entire string and append a carriage return
-	while (*s) {
-		usart_putchar(*s);
-		s++;
-	}
-	usart_putchar('\n');
+    // Loop through entire string and append a carriage return
+    while (*s) {
+        usart_putchar(*s);
+        s++;
+    }
+    usart_putchar('\n');
 }
 
 void usart_puts_P(const char *s)
 {
-	// Loop through entire string and append a carriage return
-	char c;
-	while ((c = pgm_read_byte(s)))
-	{
-		usart_putchar(c);
-		s++;
-	}
-	usart_putchar('\n');
+    // Loop through entire string and append a carriage return
+    char c;
+    while ((c = pgm_read_byte(s)))
+    {
+        usart_putchar(c);
+        s++;
+    }
+    usart_putchar('\n');
 }
 
 #if (USART_BUFFER_RX)
@@ -90,101 +91,101 @@ static volatile uint8_t usart_buffer_rx_tail = 0;
 
 ISR(USART_RX_VECT)
 {
-	// Read byte
-	char c = USART_UDR;
+    // Read byte
+    char c = USART_UDR;
 
-	// TODO check Parity error if enabled
-	// bit_is_clear(*_ucsra, UPE0)
+    // TODO check Parity error if enabled
+    // bit_is_clear(*_ucsra, UPE0)
 
-	// Discard data if buffer is full
-	uint8_t new_index = ((uint8_t)(usart_buffer_rx_head + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
-	if (new_index == usart_buffer_rx_tail)
-	{
-		return;
-	}
+    // Discard data if buffer is full
+    uint8_t new_index = ((uint8_t)(usart_buffer_rx_head + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
+    if (new_index == usart_buffer_rx_tail)
+    {
+        return;
+    }
 
-	// Safe data and increment head
-	usart_buffer_rx[usart_buffer_rx_head] = c;
-	usart_buffer_rx_head = new_index;
+    // Safe data and increment head
+    usart_buffer_rx[usart_buffer_rx_head] = c;
+    usart_buffer_rx_head = new_index;
 }
 
 int usart_getchar(void)
 {
-	int ret;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-	{
-		// Check if more data is available
-		if (usart_buffer_rx_head == usart_buffer_rx_tail)
-		{
-			ret = -1;
-		}
-		else{
-			ret = usart_buffer_rx[usart_buffer_rx_tail];
-			usart_buffer_rx_tail = ((uint8_t)(usart_buffer_rx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
-		}
-	}
-	return ret;
+    int ret;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+        // Check if more data is available
+        if (usart_buffer_rx_head == usart_buffer_rx_tail)
+        {
+            ret = -1;
+        }
+        else{
+            ret = usart_buffer_rx[usart_buffer_rx_tail];
+            usart_buffer_rx_tail = ((uint8_t)(usart_buffer_rx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
+        }
+    }
+    return ret;
 }
 
 int usart_peek(void)
 {
-	int ret;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-	{
-		// Check if more data is available
-		if (usart_buffer_rx_head == usart_buffer_rx_tail)
-		{
-			ret = -1;
-		}
-		else{
-			ret = usart_buffer_rx[usart_buffer_rx_tail];
-		}
-	}
-	return ret;
+    int ret;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+        // Check if more data is available
+        if (usart_buffer_rx_head == usart_buffer_rx_tail)
+        {
+            ret = -1;
+        }
+        else{
+            ret = usart_buffer_rx[usart_buffer_rx_tail];
+        }
+    }
+    return ret;
 }
 
 bool usart_avail(void)
 {
-	bool ret;
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-	{
-		// Check if more data is available
-		if (usart_buffer_rx_head == usart_buffer_rx_tail)
-		{
-			ret = false;
-		}
-		else{
-			ret = true;
-		}
-	}
-	return ret;
+    bool ret;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+    {
+        // Check if more data is available
+        if (usart_buffer_rx_head == usart_buffer_rx_tail)
+        {
+            ret = false;
+        }
+        else{
+            ret = true;
+        }
+    }
+    return ret;
 }
 
 #else // !(USART_BUFFER_RX)
 int usart_getchar(void)
 {
-	// Check for new byte and return it
-	if (USART_UCSRA & (1 << USART_RXC))
-	{
-		return USART_UDR;
-	}
-	return -1;
+    // Check for new byte and return it
+    if (USART_UCSRA & (1 << USART_RXC))
+    {
+        return USART_UDR;
+    }
+    return -1;
 }
 
 int usart_peek(void)
 {
-	// Impossible without buffers
-	return -1;
+    // Impossible without buffers
+    return -1;
 }
 
 bool usart_avail(void)
 {
-	// Check for new byte and return it
-	if (USART_UCSRA & (1 << USART_RXC))
-	{
-		return true;
-	}
-	return false;
+    // Check for new byte and return it
+    if (USART_UCSRA & (1 << USART_RXC))
+    {
+        return true;
+    }
+    return false;
 }
 #endif
 
@@ -201,21 +202,21 @@ int usart_fgetc(FILE *stream)
 
 void usart_init_stdout(void)
 {
-	stdout = &usart_output;
+    stdout = &usart_output;
 }
 
 void usart_init_stdin(void)
 {
-	stdin = &usart_input;
+    stdin = &usart_input;
 }
 
 void usart_init_stderr(void)
 {
-	stderr = &usart_error;
+    stderr = &usart_error;
 }
 
 void usart_init_stdio(void)
 {
-	stdin = &usart_io;
-	stdout = &usart_io;
+    stdin = &usart_io;
+    stdout = &usart_io;
 }
