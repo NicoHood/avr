@@ -135,6 +135,12 @@ void usart_flush(void)
     while(!(USART_UCSRA & (1 << USART_UDRE)));
 }
 
+uint8_t usart_avail_write(void)
+{
+    return ((uint8_t)((uint8_t)USART_BUFFER_TX - usart_buffer_tx_head + \
+        usart_buffer_tx_tail - (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
+}
+
 #else
 void usart_putchar(const char c)
 {
@@ -154,6 +160,15 @@ void usart_flush(void)
 {
     // Wait for empty transmit buffer
     while(!(USART_UCSRA & (1 << USART_UDRE)));
+}
+
+uint8_t usart_avail_write(void)
+{
+    if (USART_UCSRA & (1 << USART_UDRE))
+    {
+        return 1;
+    }
+    return 0;
 }
 #endif
 

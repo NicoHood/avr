@@ -61,6 +61,7 @@ void usart_init_stdio(void);
 // Transmit
 void usart_putchar(const char c);
 void usart_flush(void);
+uint8_t usart_avail_write(void);
 void usart_write(const uint8_t* buff, size_t len);
 void usart_write_P(const uint8_t* buff, size_t len);
 void usart_puts(const char *s);
