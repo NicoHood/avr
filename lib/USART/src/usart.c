@@ -68,7 +68,7 @@ ISR(USART_UDRE_VECT)
 
     // Send byte and clear Tx flag. See comment in usart_putchar() for more details
     USART_UDR = c;
-    USART_UCSRA |= USART_TXC;
+    USART_UCSRA |= (1 << USART_TXC);
 
     // Diable usart tx interrupt if all bytes were transmitted
     if (usart_buffer_tx_head == usart_buffer_tx_tail)
@@ -100,7 +100,7 @@ void usart_putchar(const char c)
         {
 #endif
             USART_UDR = c;
-            USART_UCSRA |= USART_TXC;
+            USART_UCSRA |= (1 << USART_TXC);
 #ifndef USART_THREAD_SAFE
         }
 #endif
