@@ -183,7 +183,7 @@ void usart_write_P(const uint8_t* buff, size_t len)
     // Write buffer to usart
     while(len--)
     {
-		usart_putchar(pgm_read_byte(buff));
+        usart_putchar(pgm_read_byte(buff));
         buff++;
     }
 }
@@ -279,8 +279,8 @@ int usart_peek(void)
 
 uint8_t usart_avail_read(void)
 {
-	// Return how many bytes are available for reading
-	// No atomic block required as 1byte access is already atomic and the tail value won't change.
+    // Return how many bytes are available for reading
+    // No atomic block required as 1byte access is already atomic and the tail value won't change.
     return ((uint8_t)((uint8_t)USART_BUFFER_RX - (uint8_t)usart_buffer_rx_tail + \
         (uint8_t)usart_buffer_rx_head) % (uint8_t)USART_BUFFER_RX);
 }
@@ -315,21 +315,21 @@ uint8_t usart_avail_read(void)
 
 size_t usart_read(uint8_t* buff, size_t len)
 {
-	// Read data into preallocated buffer. len should normally not be > USART_BUFFER_RX
-	// Should be user along with usart_avail_read() to determine available byte count.
-	size_t count = 0;
-	while(len--)
-	{
-		int c = usart_getchar();
-		if (c < 0)
-		{
-			return count;
-		}
-		*buff = c;
-		buff++;
-		count++;
-	}
-	return count;
+    // Read data into preallocated buffer. len should normally not be > USART_BUFFER_RX
+    // Should be user along with usart_avail_read() to determine available byte count.
+    size_t count = 0;
+    while(len--)
+    {
+        int c = usart_getchar();
+        if (c < 0)
+        {
+            return count;
+        }
+        *buff = c;
+        buff++;
+        count++;
+    }
+    return count;
 }
 
 int usart_fputc(char c, FILE *stream)
