@@ -6,12 +6,22 @@ This repository contains new, standalone libraries as well as makefiles for popu
 
 The purpose of this library is to use a clean and modular build system with libraries optimized in size and speed while still being able to use popular Arduino libraries like FastLED, but without any Arduino core.
 
+### Benefits
+- Clean, modular, extensible, professional makefile build system used (DMBS)
+- Standardized folder structures and naming across all libraries
+- Smaller code due to build time optimizations and better makefile handling
+- Usage of stdio with serial port: putc, puts, printf, etc.
+- Small and fast timer0 code from teensy core: micros(), millis(), delay(), delayMicroseconds()
+- FastLED library fully compatible
+- FastPin from FastLED usable without Led code (for faster pin access)
+
 ## Modules Overview
 
 The following modules are currently included:
 
  - [BOARD](lib/BOARD/Readme.md) - Boards specific definitions like led pins
  - [TIMER0](lib/TIMER0/Readme.md) - Basic time functions
+ - [USART](lib/USART/Readme.md) - Serial i/o operations with stdio functionality (printf etc.)
  - [FASTLED](lib/FASTLED/Readme.md) - [FastLED](https://github.com/FastLED/FastLED) library
  - [FASTPIN](lib/FASTLED/Readme.md) - FastPin class of [FastLED](https://github.com/FastLED/FastLED) library
 
