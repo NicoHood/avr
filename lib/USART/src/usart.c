@@ -313,6 +313,25 @@ uint8_t usart_avail_read(void)
 }
 #endif
 
+size_t usart_read(uint8_t* buff, size_t len)
+{
+	// Read data into preallocated buffer. len should normally not be > USART_BUFFER_RX
+	// Should be user along with usart_avail_read() to determine available byte count.
+	size_t count = 0;
+	while(len--)
+	{
+		int c = usart_getchar();
+		if (c < 0)
+		{
+			return count;
+		}
+		*buff = c;
+		buff++;
+		count++;
+	}
+	return count;
+}
+
 int usart_fputc(char c, FILE *stream)
 {
     usart_putchar(c);

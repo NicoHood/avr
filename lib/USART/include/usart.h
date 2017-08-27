@@ -54,6 +54,7 @@ void usart_puts_P(const char *s);
 int usart_getchar(void);
 int usart_peek(void);
 uint8_t usart_avail_read(void);
+size_t usart_read(uint8_t* buff, size_t len);
 
 #ifdef __cplusplus
 }

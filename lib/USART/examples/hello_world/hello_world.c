@@ -71,6 +71,18 @@ int main(void)
     usart_flush();
     LED_OFF();
 
+    // Test available bytes function
+    uint8_t count_avail = usart_avail_read();
+    char data[255];
+    printf_P(PSTR("You typed %d bytes, while the program was still transmitting.\n"), count_avail);
+    usart_flush();
+
+    // While flushing the text above, now type more data.
+    // If the read buffer is large enough, it can read even more data.
+    size_t count_read = usart_read((uint8_t*)data, sizeof(data));
+    printf_P(PSTR("The buffered read found %d bytes. Will echo them now.\n"), count_read);
+    usart_write((uint8_t*)data, count_read);
+
     // Echo incoming bytes
     while(true)
     {
