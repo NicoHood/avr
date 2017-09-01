@@ -56,8 +56,8 @@ void usart_init(void)
 }
 
 #if (USART_BUFFER_TX)
-static volatile uint8_t usart_buffer_tx[USART_BUFFER_TX] = {};
-static volatile uint8_t usart_buffer_tx_head = 0;
+static volatile uint8_t usart_buffer_tx[USART_BUFFER_TX] = { 0 };
+static uint8_t usart_buffer_tx_head = 0;
 static volatile uint8_t usart_buffer_tx_tail = 0;
 
 ISR(USART_UDRE_VECT)
@@ -86,9 +86,7 @@ void usart_putchar(const char c)
     // Send data directly if buffer is empty and transmit is ready
     // This improves performance on higher baudrates to avoid the ISR overhead
     // No atomic block is required, as only the tail gets incremented inside the ISR, head untouched
-    // The head is safed in a temporary variable to safe a bit more flash
-    uint8_t head = usart_buffer_tx_head;
-    if ((head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
+    if ((usart_buffer_tx_head == usart_buffer_tx_tail) && (USART_UCSRA & (1 << USART_UDRE)))
     {
         // Send byte. TXC bit will not be used here.
         // See: https://github.com/arduino/Arduino/commit/ccd8880a37261b53ae11c666de0a29d85c28ae36
@@ -96,7 +94,15 @@ void usart_putchar(const char c)
     }
     else{
         // If buffer is full, wait for it to get emptied by interrupt
-        uint8_t new_index = ((uint8_t)(head + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
+        uint8_t new_index = ((uint8_t)(usart_buffer_tx_head + (uint8_t)1) % (uint8_t)USART_BUFFER_TX);
+#ifdef USART_THREAD_SAFE
+        if (new_index == usart_buffer_tx_tail)
+        {
+            // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
+            while(!(USART_UCSRA & (1 << USART_UDRE)));
+            USART_UDRE_VECT();
+        }
+#else
         while (new_index == usart_buffer_tx_tail)
         {
             // Interrupts are disabled. Wait for empty transmit buffer, then start transmission
@@ -106,6 +112,7 @@ void usart_putchar(const char c)
                 USART_UDRE_VECT();
             }
         }
+#endif
 
         // Safe new byte and enable interrupts again
         usart_buffer_tx[usart_buffer_tx_head] = c;
@@ -215,9 +222,9 @@ void usart_puts_P(const char *s)
 }
 
 #if (USART_BUFFER_RX)
-static volatile uint8_t usart_buffer_rx[USART_BUFFER_RX] = {};
+static volatile uint8_t usart_buffer_rx[USART_BUFFER_RX] = { 0 };
 static volatile uint8_t usart_buffer_rx_head = 0;
-static volatile uint8_t usart_buffer_rx_tail = 0;
+static uint8_t usart_buffer_rx_tail = 0;
 
 ISR(USART_RX_VECT)
 {
