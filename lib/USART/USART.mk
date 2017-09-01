@@ -59,7 +59,9 @@ DMBS_BUILD_PROVIDED_MACROS +=
 $(foreach MANDATORY_VAR, $(DMBS_BUILD_MANDATORY_VARS), $(call ERROR_IF_UNSET, $(MANDATORY_VAR)))
 
 # USART Library
-USART_SRC := $(USART_MODULE_PATH)/src/usart.c
+USART_SRC := $(USART_MODULE_PATH)/src/usart_init.c
+USART_SRC += $(USART_MODULE_PATH)/src/usart_tx.c
+USART_SRC += $(USART_MODULE_PATH)/src/usart_rx.c
 
 # Compiler flags and sources
 SRC                += $(USART_SRC)
