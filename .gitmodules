@@ -10,3 +10,6 @@
 [submodule "submodules/PinChangeInterrupt"]
 	path = submodules/PinChangeInterrupt
 	url = git@github.com:NicoHood/PinChangeInterrupt.git
+[submodule "submodules/IRLremote"]
+	path = submodules/IRLremote
+	url = git@github.com:NicoHood/IRLremote.git
