@@ -27,18 +27,26 @@ THE SOFTWARE.
 extern "C" {
 #endif
 
-// Software version
-#define BOARD_VERSION 100
+#include <avr/io.h>
 
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-// Check for custom board
-#if defined(CUSTOM_BOARD)
-    #pragma message "Board " STR(BOARD) " not supported. Please define your own board specific options"
+// Board variants
+#if defined(ARDUINO_LEONARDO) || defined(ARDUINO_MICRO)
+    #define digitalPinToPCICR(p)    ((((p) >= 8 && (p) <= 11) || ((p) >= 14 && (p) <= 17) || ((p) >= A8 && (p) <= A10)) ? (&PCICR) : ((uint8_t *)0))
+    #define digitalPinToPCICRbit(p) 0
+    #define digitalPinToPCMSK(p)    ((((p) >= 8 && (p) <= 11) || ((p) >= 14 && (p) <= 17) || ((p) >= A8 && (p) <= A10)) ? (&PCMSK0) : ((uint8_t *)0))
+    #define digitalPinToPCMSKbit(p) ( ((p) >= 8 && (p) <= 11) ? (p) - 4 : ((p) == 14 ? 3 : ((p) == 15 ? 1 : ((p) == 16 ? 2 : ((p) == 17 ? 0 : (p - A8 + 4))))))
+
+#elif defined(ARDUINO_UNO) || defined(ARDUINO_NANO) || defined(ARDUINO_MINI)
+    #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 21) ? (&PCICR) : ((uint8_t *)0))
+    #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
+    #define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 21) ? (&PCMSK1) : ((uint8_t *)0))))
+    #define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : ((p) - 14)))
+
 #else
-    #include "board_leds.h"
-    #include "board_pins.h"
+    #pragma message "Board " STR(BOARD) " Pins not supported. Please define your own board specific pins"
 #endif
 
 #ifdef __cplusplus
