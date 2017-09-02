@@ -14,6 +14,7 @@ The purpose of this library is to use a clean and modular build system with libr
 - Small and fast timer0 code from teensy core: micros(), millis(), delay(), delayMicroseconds()
 - FastLED library fully compatible
 - FastPin from FastLED usable without Led code (for faster pin access)
+- Extremely optimized PinChangeInterrupt library with compile-time optimization
 
 ## Modules Overview
 
@@ -24,6 +25,7 @@ The following modules are currently included:
  - [USART](lib/USART/Readme.md) - Serial i/o operations with stdio functionality (printf etc.)
  - [FASTLED](lib/FASTLED/Readme.md) - [FastLED](https://github.com/FastLED/FastLED) library
  - [FASTPIN](lib/FASTLED/Readme.md) - FastPin class of [FastLED](https://github.com/FastLED/FastLED) library
+ - [PCINT](lib/PCINT/Readme.md) - [PinChangeInterrupt](https://github.com/NicoHood/PinChangeInterrupt) library
 
 ## Usage
 
