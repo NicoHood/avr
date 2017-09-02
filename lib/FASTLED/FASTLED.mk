@@ -43,11 +43,6 @@ ifneq ($(findstring GCC, $(DMBS_BUILD_MODULES)),)
 $(error Include this module before gcc.mk)
 endif
 
-# Depedency conflict with FASTPIN module
-ifneq ($(findstring FASTPIN, $(DMBS_BUILD_MODULES)),)
-$(error Depedency conflict with FASTPIN module)
-endif
-
 # Help settings
 DMBS_BUILD_MODULES         += FASTLED
 DMBS_BUILD_TARGETS         +=
@@ -73,6 +68,7 @@ FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/bitswap.cpp
 SRC                += $(FASTLED_SRC)
 CC_FLAGS           += -DDMBS_MODULE_FASTLED
 CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/src/FastLED/
+CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/include
 CC_FLAGS           += -include $(TIMER0_MODULE_PATH)/include/timer0.h
 CC_FLAGS           += -DFASTLED_NO_PINMAP -DFASTLED_NEED_YIELD -Dtimer0_millis=timer0_millis_count
 FastLED.cpp_FLAGS   = -DNEED_CXX_BITS

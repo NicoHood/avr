@@ -38,11 +38,6 @@ ifneq ($(findstring GCC, $(DMBS_BUILD_MODULES)),)
 $(error Include this module before gcc.mk)
 endif
 
-# Depedency conflict with FASTLED module
-ifneq ($(findstring FASTLED, $(DMBS_BUILD_MODULES)),)
-$(error Depedency conflict with FASTLED module)
-endif
-
 # Help settings
 DMBS_BUILD_MODULES         += FASTPIN
 DMBS_BUILD_TARGETS         +=
@@ -57,7 +52,7 @@ $(foreach MANDATORY_VAR, $(DMBS_BUILD_MANDATORY_VARS), $(call ERROR_IF_UNSET, $(
 # Compiler flags and sources
 CC_FLAGS           += -DDMBS_MODULE_FASTPIN
 CC_FLAGS           += -I$(FASTPIN_MODULE_PATH)/include
-CC_FLAGS           += -DFASTLED_NO_PINMAP -DFASTLED_NEED_YIELD -D__INC_FASTSPI_LED2_H
+CC_FLAGS           += -DFASTLED_NO_PINMAP
 
 # Use c++11 standard
 CPP_STANDARD        = gnu++11

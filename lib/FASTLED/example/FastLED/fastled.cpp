@@ -22,7 +22,7 @@ THE SOFTWARE.
 */
 
 #include "timer0.h"
-#include "FastLED.h"
+#include "fastled.h"
 
 // How many leds in your strip?
 #define NUM_LEDS 1

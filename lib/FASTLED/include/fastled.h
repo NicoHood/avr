@@ -24,19 +24,4 @@ THE SOFTWARE.
 // Include guard
 #pragma once
 
-// Software version
-#define FASTPIN_VERSION 100
-
-// Disable inclusion of FastLED led drivers
-#ifdef __INC_FASTSPI_LED2_H
-#define FASTPIN_FASTLED
-#else
-#define __INC_FASTSPI_LED2_H
-#endif
-
-#include "../src/FastLED/fastpin.h"
-#include "../src/FastLED/platforms/avr/fastpin_avr.h"
-
-#ifndef FASTPIN_FASTLED
-#undef __INC_FASTSPI_LED2_H
-#endif
+#include "../src/FastLED/FastLED.h"
