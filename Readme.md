@@ -49,11 +49,3 @@ It is recommended to read each libraries makefile first. It it show you how to s
 
 ## Writing Your Own Modules
 You can use my libraries as an example or use the [guide](https://github.com/abcminiuser/dmbs/blob/master/DMBS/WritingYourOwnModules.md) and [template](https://github.com/abcminiuser/dmbs/pull/22) from DMBS directly.
-
-## Known issues
-
-### DMBS
-It is recommended to use my [patched version of DMBS](https://github.com/NicoHood/dmbs/tree/compiler_option) to get all functionalities. Those patches will get applied upstream hopefully soon.
-
-### FastLED
-In order to build FastLED [a few patches](https://github.com/NicoHood/FastLED/tree/makefile) need to get applied to the current master. Fixes upstream are tracked within [this issue](https://github.com/FastLED/FastLED/issues/485).

@@ -71,7 +71,10 @@ CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/src/FastLED/
 CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/include
 CC_FLAGS           += -include $(TIMER0_MODULE_PATH)/include/timer0.h
 CC_FLAGS           += -DFASTLED_NO_PINMAP -DFASTLED_NEED_YIELD -Dtimer0_millis=timer0_millis_count
-FastLED.cpp_FLAGS   = -DNEED_CXX_BITS
+# TODO remove this workaround when PR is merged:
+# https://github.com/abcminiuser/dmbs/pull/27
+CC_FLAGS           += -DNEED_CXX_BITS
+#FastLED.cpp_FLAGS   = -DNEED_CXX_BITS
 
 # Use c++11 standard
 CPP_STANDARD        = gnu++11
