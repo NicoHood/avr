@@ -33,8 +33,6 @@ THE SOFTWARE.
 #define DATA_PIN 3
 #define CLOCK_PIN 13
 
-void loop(void);
-
 // Define the array of leds
 CRGB leds[NUM_LEDS];
 
