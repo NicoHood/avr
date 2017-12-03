@@ -123,9 +123,9 @@ int usart_fgetc(FILE *stream);
 #define USART_TXEN          TXEN1
 
 // Bit mapping UCSRnC
-#define USART_UPM0          UPM0
-#define USART_UPM1          UPM1
-#define USART_USBS          USBS
+#define USART_UPM0          UPM10
+#define USART_UPM1          UPM11
+#define USART_USBS          USBS1
 #define USART_UCSZ0         UCSZ10
 #define USART_UCSZ1         UCSZ11
 #define USART_UCSZ2         UCSZ12
@@ -133,6 +133,10 @@ int usart_fgetc(FILE *stream);
 // Interrupt vectors
 #define USART_RX_VECT       USART1_RX_vect
 #define USART_UDRE_VECT     USART1_UDRE_vect
+
+// TX/RX pin functions
+#define USART_TX_HIGH()     PORTD |= (1 << PD3)
+#define USART_TX_LOW()      PORTD &= ~(1 << PD3)
 
 #elif defined(__AVR_ATmega328__) || defined(__AVR_ATmega128__) || defined(__AVR_ATmega328P__)
 
@@ -163,9 +167,9 @@ int usart_fgetc(FILE *stream);
 #define USART_TXEN          TXEN0
 
 // Bit mapping UCSRnC
-#define USART_UPM0          UPM0
-#define USART_UPM1          UPM0
-#define USART_USBS          USBS
+#define USART_UPM0          UPM00
+#define USART_UPM1          UPM01
+#define USART_USBS          USBS0
 #define USART_UCSZ0         UCSZ00
 #define USART_UCSZ1         UCSZ01
 #define USART_UCSZ2         UCSZ02
@@ -173,6 +177,10 @@ int usart_fgetc(FILE *stream);
 // Interrupt vectors
 #define USART_RX_VECT       USART_RX_vect
 #define USART_UDRE_VECT     USART_UDRE_vect
+
+// TX/RX pin functions
+#define USART_TX_HIGH()     PORTD |= (1 << PD1)
+#define USART_TX_LOW()      PORTD &= ~(1 << PD1)
 
 #else
 #error "Unsupported MCU"
