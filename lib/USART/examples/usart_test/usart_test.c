@@ -38,6 +38,9 @@ THE SOFTWARE.
 // PROGMEM variables
 const char PROGMEM str_P[] = "This is a test string as character array in PROGMEM.\n";
 
+// Filestreams for stdio functions
+static FILE UsartSerialStream;
+
 int main(void)
 {
     // Initialize usart and enable global interrupts
@@ -54,8 +57,9 @@ int main(void)
     usart_write_P((uint8_t*)str_P, strlen_P(str_P));
 
     // Setup stdio functionallity
-    usart_init_stdout();
-    usart_init_stdin();
+    usart_init_stream(&UsartSerialStream);
+    stdin = &UsartSerialStream;
+    stdout = &UsartSerialStream;
 
     // Print string
     puts("Hello stdio!");
