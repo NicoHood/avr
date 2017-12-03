@@ -53,10 +53,10 @@ extern "C" {
 
 // Initialize
 void usart_init(void);
-void usart_init_stdout(void);
-void usart_init_stdin(void);
-void usart_init_stderr(void);
-void usart_init_stdio(void);
+void usart_init_baud(uint32_t baud, uint8_t parity, uint8_t stop_bits, uint8_t data_bits);
+void usart_detach(void);
+void usart_set_baud(uint32_t baud, uint8_t parity, uint8_t stop_bits, uint8_t data_bits);
+void usart_init_stream(FILE* const Stream);
 
 // Transmit
 void usart_putchar(const char c);

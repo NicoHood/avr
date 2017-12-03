@@ -41,6 +41,24 @@ THE SOFTWARE.
 #define BAUD USART_BAUDRATE
 #include <util/setbaud.h>
 
+/** Macro for calculating the baud value from a given baud rate when the \c U2X (double speed) bit is
+ *  not set.
+ *
+ *  \param[in] Baud  Target serial UART baud rate.
+ *
+ *  \return Closest UBRR register value for the given UART frequency.
+ */
+#define SERIAL_UBBRVAL(Baud)    ((((F_CPU / 16) + (Baud / 2)) / (Baud)) - 1)
+
+/** Macro for calculating the baud value from a given baud rate when the \c U2X (double speed) bit is
+ *  set.
+ *
+ *  \param[in] Baud  Target serial UART baud rate.
+ *
+ *  \return Closest UBRR register value for the given UART frequency.
+ */
+#define SERIAL_2X_UBBRVAL(Baud) ((((F_CPU / 8) + (Baud / 2)) / (Baud)) - 1)
+
 // Check buffer size limits
 // TODO rename to static_assert() when avr-libc >2.0.0 gets released
 // https://savannah.nongnu.org/bugs/?41689
