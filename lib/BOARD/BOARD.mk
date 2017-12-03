@@ -58,7 +58,8 @@ PRINTABLE_BOARD_LIST = $(call CONVERT_TO_PRINTABLE, $(SORTED_BOARD_LIST))
 # Compiler flags and sources
 CC_FLAGS           += -DDMBS_MODULE_BOARD
 CC_FLAGS           += -I $(BOARD_MODULE_PATH)/include
-CC_FLAGS           += -D$(BOARD) -DBOARD=\"$(BOARD)\"
+CC_FLAGS           += -D$(BOARD)
+CC_FLAGS           += -DBOARD=BOARD_$(BOARD)
 
 # Board variants
 ifeq ($(BOARD), ARDUINO_LEONARDO)
