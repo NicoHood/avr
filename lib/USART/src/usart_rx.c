@@ -64,7 +64,7 @@ int usart_getchar(void)
         // Check if more data is available
         if (usart_buffer_rx_head == usart_buffer_rx_tail)
         {
-            ret = -1;
+            ret = EOF;
         }
         else{
             ret = usart_buffer_rx[usart_buffer_rx_tail];
@@ -82,7 +82,7 @@ int usart_peek(void)
         // Check if more data is available
         if (usart_buffer_rx_head == usart_buffer_rx_tail)
         {
-            ret = -1;
+            ret = EOF;
         }
         else{
             ret = usart_buffer_rx[usart_buffer_rx_tail];
@@ -107,13 +107,13 @@ int usart_getchar(void)
     {
         return USART_UDR;
     }
-    return -1;
+    return EOF;
 }
 
 int usart_peek(void)
 {
     // Impossible without buffers
-    return -1;
+    return EOF;
 }
 
 uint8_t usart_avail_read(void)
@@ -146,13 +146,12 @@ size_t usart_read(uint8_t* buff, size_t len)
     return count;
 }
 
-int usart_fputc(char c, FILE *stream)
-{
-    usart_putchar(c);
-    return 0;
-}
-
 int usart_fgetc(FILE *stream)
 {
-    return usart_getchar();
+    int c = usart_getchar();
+    if (c < 0)
+    {
+        return _FDEV_EOF;
+    }
+    return c;
 }
