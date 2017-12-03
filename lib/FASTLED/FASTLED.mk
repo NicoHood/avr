@@ -20,7 +20,7 @@
 # THE SOFTWARE.
 
 # Include Guard
-ifeq ($(findstring FASTLED, $(DMBS_BUILD_MODULES)),)
+ifeq ($(filter FASTLED, $(DMBS_BUILD_MODULES)),)
 
 # Sanity check user supplied DMBS path
 ifndef DMBS_PATH
@@ -39,7 +39,7 @@ $(call ERROR_IF_EMPTY, TIMER0_PATH)
 include $(TIMER0_PATH)/TIMER0.mk
 
 # This module needs to be included before gcc.mk
-ifneq ($(findstring GCC, $(DMBS_BUILD_MODULES)),)
+ifneq ($(filter GCC, $(DMBS_BUILD_MODULES)),)
 $(error Include this module before gcc.mk)
 endif
 

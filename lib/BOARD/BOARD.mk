@@ -20,7 +20,7 @@
 # THE SOFTWARE.
 
 # Include Guard
-ifeq ($(findstring BOARD, $(DMBS_BUILD_MODULES)),)
+ifeq ($(filter BOARD, $(DMBS_BUILD_MODULES)),)
 
 # Sanity check user supplied DMBS path
 ifndef DMBS_PATH
@@ -34,7 +34,7 @@ BOARD_MODULE_PATH := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 include $(DMBS_PATH)/core.mk
 
 # This module needs to be included before gcc.mk
-ifneq ($(findstring GCC, $(DMBS_BUILD_MODULES)),)
+ifneq ($(filter GCC, $(DMBS_BUILD_MODULES)),)
 $(error Include this module before gcc.mk)
 endif
 
