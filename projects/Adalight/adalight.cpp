@@ -29,8 +29,8 @@ THE SOFTWARE.
 #include "usart.h"
 #include "board_leds.h"
 
-// How many leds in your strip?
-#define NUM_LEDS 50
+// How many leds are in your strip?
+#define NUM_LEDS 25
 
 // For led chips like Neopixels, which have a data line, ground, and power, you just
 // need to define DATA_PIN. For led chipsets that are SPI based (four wires - data, clock,
@@ -46,27 +46,32 @@ CRGB leds[NUM_LEDS];
 //  0 Active
 // -1 Error
 // -2 Inactive/Timeout
-int adalight(CRGB* myleds, const int numLeds, const uint32_t timeout = 15000)
+template <FILE* const stream, CRGB* myleds, const int numLeds, const uint32_t timeout = 15000>
+int adalight(void)
 {
     static uint32_t previousTime = 0;
     static uint8_t magicPos = 0;
     static uint16_t numPixel = 0;
     static uint8_t pixelCache[2] = { 0, 0 };
 
-    // Process all currently available bytes.
-    // This is required to not wait too long between each update.
-    // Also do not loop until read() returns -1 to not block forever on fast inputs.
-    bool updateLeds = false;
-    auto bytesAvailable = usart_avail_read();
+    // Process a maximum of 64 bytes.
+    // This is required to not wait too long between each update
+    // but also to not block forever on fast input rates.
+    uint8_t bytesAvailable = 64;
 
     // Mark adalight as active from here (leds will be overwritten soon!)
-    bool newData = bytesAvailable;
+    bool updateLeds = false;
+    bool newData = false;
     bool error = false;
     while (bytesAvailable--)
     {
         // Write leds via Adalight
         // Check if any errors occured while reading the new data
-        uint8_t input = usart_getchar();
+        int input = fgetc(stream);
+        if (input < 0) {
+            break;
+        }
+        newData = true;
 
         // Get the next magic word letter.
         // Always check for a new magic word serious, even while processing LED data.
@@ -186,6 +191,9 @@ int adalight(CRGB* myleds, const int numLeds, const uint32_t timeout = 15000)
     return 0;
 }
 
+// File Stream
+static FILE UsartSerialStream;
+
 int main(void)
 {
     // Initialize libraries and enable interrupts
@@ -194,12 +202,8 @@ int main(void)
     LED_INIT();
     sei();
 
-    // Setup stdio functionallity
-    usart_init_stdout();
-    usart_init_stdin();
-
-    // Print string
-    puts_P(PSTR("Hello World!"));
+    // Setup usart stream
+    usart_init_stream(&UsartSerialStream);
 
     // Uncomment/edit one of the following lines for your leds arrangement.
     // FastLED.addLeds<TM1803, DATA_PIN, RGB>(leds, NUM_LEDS);
@@ -208,14 +212,14 @@ int main(void)
     // FastLED.addLeds<WS2811, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);
-    FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+    // FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
     // FastLED.addLeds<APA104, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<UCS1903, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<UCS1903B, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<GW6205, DATA_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<GW6205_400, DATA_PIN, RGB>(leds, NUM_LEDS);
 
-    // FastLED.addLeds<WS2801, RGB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2801, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<SM16716, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<LPD8806, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<P9813, RGB>(leds, NUM_LEDS);
@@ -242,7 +246,7 @@ int main(void)
     {
         static uint32_t previousTime = 0;
         auto currentTime = millis();
-        auto ret = adalight(leds, NUM_LEDS);
+        auto ret = adalight<&UsartSerialStream, leds, NUM_LEDS>();
         if(ret > 0) {
             FastLED.show();
         }
@@ -261,7 +265,7 @@ int main(void)
         }
 
         // Turn error led off after one second
-        if ((currentTime - previousTime) > 1000)
+        if ((currentTime - previousTime) > 1000UL)
         {
             LED_OFF();
         }
