@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 // Software version
-#define USART_VERSION 100
+#define USART_VERSION 110
 
 #include <stdint.h>
 #include <stddef.h>
@@ -56,7 +56,7 @@ void usart_init(void);
 void usart_init_baud(uint32_t baud, uint8_t parity, uint8_t stop_bits, uint8_t data_bits);
 void usart_detach(void);
 void usart_set_baud(uint32_t baud, uint8_t parity, uint8_t stop_bits, uint8_t data_bits);
-void usart_init_stream(FILE* const Stream);
+void usart_init_stream(FILE* const stream);
 
 // Transmit
 void usart_putchar(const char c);

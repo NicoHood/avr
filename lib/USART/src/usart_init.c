@@ -24,7 +24,6 @@ THE SOFTWARE.
 #include "usart.h"
 #include "usart_private.h"
 
-
 void usart_init(void)
 {
     // Initialize baud rate. Can be changed later.
@@ -145,7 +144,7 @@ void usart_set_baud(uint32_t baud, uint8_t parity, uint8_t stop_bits, uint8_t da
 	USART_TX_LOW();
 }
 
-void usart_init_stream(FILE* const Stream)
+void usart_init_stream(FILE* const stream)
 {
-	*Stream = (FILE)FDEV_SETUP_STREAM(usart_fputc, usart_fgetc, _FDEV_SETUP_RW);
+	*stream = (FILE)FDEV_SETUP_STREAM(usart_fputc, usart_fgetc, _FDEV_SETUP_RW);
 }
