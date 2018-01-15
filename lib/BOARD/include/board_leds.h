@@ -38,15 +38,15 @@ extern "C" {
     #define LED_INIT()      DDRC  |=  (1 << PC7)
     #define LED_ON()        PORTC |=  (1 << PC7)
     #define LED_OFF()       PORTC &= ~(1 << PC7)
-    #define LED_TOGGLE()    PORTC ^=  (1 << PC7)
+    #define LED_TOGGLE()    PINC  |=  (1 << PC7)
 
     #define RX_LED          17
     #define RX_LED_INIT()   DDRB  |=  (1 << PB0)
-    #define RX_LED_TOGGLE() PORTB ^=  (1 << PB0)
+    #define RX_LED_TOGGLE() PINB  |=  (1 << PB0)
 
     #define TX_LED          30
     #define TX_LED_INIT()   DDRD  |=  (1 << PD5)
-    #define TX_LED_TOGGLE() PORTD ^=  (1 << PD5)
+    #define TX_LED_TOGGLE() PIND  |=  (1 << PD5)
 
     // Arduino Leonardo and Micro have different pull-up/downs for RX/TX leds
 #if defined(ARDUINO_LEONARDO)
@@ -67,7 +67,7 @@ extern "C" {
     #define LED_INIT()      DDRB  |=  (1 << PB5)
     #define LED_ON()        PORTB |=  (1 << PB5)
     #define LED_OFF()       PORTB &= ~(1 << PB5)
-    #define LED_TOGGLE()    PORTB ^=  (1 << PB5)
+    #define LED_TOGGLE()    PINB  |=  (1 << PB5)
 
 #else
     #pragma message "Board " STR(BOARD) " Leds not supported. Please define your own board specific leds"
