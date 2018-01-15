@@ -7,10 +7,11 @@
 #
 
 # Run "make help" for target help.
-MCU          = atmega328p
-BOARD		 = ARDUINO_NANO
+MCU          = atmega32u4
+BOARD		 = ARDUINO_LEONARDO
 ARCH         = AVR8
 F_CPU        = 16000000
+F_USB        = $(F_CPU)
 OPTIMIZATION = s
 TARGET       = adalight
 SRC          = $(TARGET).cpp
@@ -38,7 +39,11 @@ all:
 # Include library build script makefile and sources
 include $(LIB_PATH)/BOARD/BOARD.mk
 include $(LIB_PATH)/FASTLED/FASTLED.mk
+ifeq ($(MCU), atmega32u4)
+include $(LIB_PATH)/USB_CDC_SERIAL/USB_CDC_SERIAL.mk
+else
 include $(LIB_PATH)/USART/USART.mk
+endif
 
 # DMBS
 include $(DMBS_PATH)/core.mk

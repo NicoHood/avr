@@ -27,8 +27,16 @@ THE SOFTWARE.
 #include "timer0.h"
 #include "fastled.h"
 #include "fastpin.h"
-#include "usart.h"
 #include "board_leds.h"
+#if defined(DMBS_MODULE_USART) && defined(DMBS_MODULE_USB_CDC_SERIAL)
+#error "Only include one serial input DMBS module."
+#elif defined(DMBS_MODULE_USART)
+#include "usart.h"
+#elif defined(DMBS_MODULE_USB_CDC_SERIAL)
+#include "usb_cdc_serial.h"
+#else
+#error "Please include the USART or the USB_CDC_SERIAL DMBS module."
+#endif
 
 // How many leds are in your strip?
 #define NUM_LEDS 25
@@ -193,7 +201,7 @@ int adalight(void)
 }
 
 // File Stream
-static FILE UsartSerialStream;
+static FILE AdalightStream;
 
 int main(void)
 {
@@ -203,13 +211,18 @@ int main(void)
     FastPin<LED_BUILTIN> pin;
     pin.setOutput();
 
-    // Initialize libraries and enable interrupts
+    // Setup serial input stream
+#if defined(DMBS_MODULE_USART)
     usart_init();
+    usart_init_stream(&AdalightStream);
+#else
+    USB_Init();
+    usb_cdc_serial_init_stream(&AdalightStream);
+#endif
+
+    // Initialize libraries and enable interrupts
     timer0_init();
     sei();
-
-    // Setup usart stream
-    usart_init_stream(&UsartSerialStream);
 
     // Uncomment/edit one of the following lines for your leds arrangement.
     // FastLED.addLeds<TM1803, DATA_PIN, RGB>(leds, NUM_LEDS);
@@ -252,7 +265,7 @@ int main(void)
     {
         static uint32_t previousTime = 0;
         auto currentTime = millis();
-        auto ret = adalight<&UsartSerialStream, leds, NUM_LEDS>();
+        auto ret = adalight<&AdalightStream, leds, NUM_LEDS>();
         if(ret > 0) {
             FastLED.show();
         }
