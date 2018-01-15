@@ -34,12 +34,39 @@ extern "C" {
 
 // Board variants
 #if defined(ARDUINO_LEONARDO) || defined(ARDUINO_MICRO)
+
+    // Mapping of analog pins as digital I/O
+    // A6-A11 share with digital pins
+    #define A0   (18)
+    #define A1   (19)
+    #define A2   (20)
+    #define A3   (21)
+    #define A4   (22)
+    #define A5   (23)
+    #define A6   (24)
+    #define A7   (25)
+    #define A8   (26)
+    #define A9   (27)
+    #define A10  (28)
+    #define A11  (29)
+
     #define digitalPinToPCICR(p)    ((((p) >= 8 && (p) <= 11) || ((p) >= 14 && (p) <= 17) || ((p) >= A8 && (p) <= A10)) ? (&PCICR) : ((uint8_t *)0))
     #define digitalPinToPCICRbit(p) 0
     #define digitalPinToPCMSK(p)    ((((p) >= 8 && (p) <= 11) || ((p) >= 14 && (p) <= 17) || ((p) >= A8 && (p) <= A10)) ? (&PCMSK0) : ((uint8_t *)0))
     #define digitalPinToPCMSKbit(p) ( ((p) >= 8 && (p) <= 11) ? (p) - 4 : ((p) == 14 ? 3 : ((p) == 15 ? 1 : ((p) == 16 ? 2 : ((p) == 17 ? 0 : (p - A8 + 4))))))
 
 #elif defined(ARDUINO_UNO) || defined(ARDUINO_NANO) || defined(ARDUINO_MINI)
+
+    // Mapping of analog pins as digital I/O
+    #define A0   (14)
+    #define A1   (15)
+    #define A2   (16)
+    #define A3   (17)
+    #define A4   (18)
+    #define A5   (19)
+    #define A6   (20)
+    #define A7   (21)
+
     #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 21) ? (&PCICR) : ((uint8_t *)0))
     #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
     #define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 21) ? (&PCMSK1) : ((uint8_t *)0))))
