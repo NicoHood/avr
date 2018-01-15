@@ -193,5 +193,5 @@ void usart_puts_P(const char *s)
 int usart_fputc(char c, FILE *stream)
 {
     usart_putchar(c);
-    return 0;
+    return c;
 }
