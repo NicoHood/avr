@@ -73,10 +73,10 @@ endif
 ifneq ($(PCINT_ENABLE),)
     # Generate defines to enable PCINT and ports
     SORTED_PCINT_ENABLE = $(sort $(PCINT_ENABLE))
-    PCINT_ENABLE_PORT0 = $(sort $(foreach pcint,0 1 2 3 4 5 6 7,$(if $(findstring $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT0)))
-    PCINT_ENABLE_PORT1 = $(sort $(foreach pcint,8 9 10 11 12 13 14 15,$(if $(findstring $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT1)))
-    PCINT_ENABLE_PORT2 = $(sort $(foreach pcint,16 17 18 19 20 21 22 23,$(if $(findstring $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT2)))
-    PCINT_ENABLE_PORT3 = $(sort $(foreach pcint,24 25 26 27 28 29 30 31,$(if $(findstring $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT3)))
+    PCINT_ENABLE_PORT0 = $(sort $(foreach pcint,0 1 2 3 4 5 6 7,$(if $(filter $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT0)))
+    PCINT_ENABLE_PORT1 = $(sort $(foreach pcint,8 9 10 11 12 13 14 15,$(if $(filter $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT1)))
+    PCINT_ENABLE_PORT2 = $(sort $(foreach pcint,16 17 18 19 20 21 22 23,$(if $(filter $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT2)))
+    PCINT_ENABLE_PORT3 = $(sort $(foreach pcint,24 25 26 27 28 29 30 31,$(if $(filter $(pcint),$(SORTED_PCINT_ENABLE)),-DPCINT_ENABLE_PORT3)))
     PCINT_ENABLE_PCINT = $(foreach pcint, $(SORTED_PCINT_ENABLE), -DPCINT_ENABLE_PCINT$(pcint))
 
     # Add definitions to CC_FLAGS
