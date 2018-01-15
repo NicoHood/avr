@@ -24,4 +24,4 @@ THE SOFTWARE.
 // Include guard
 #pragma once
 
-#include "../src/FastLED/FastLED.h"
+#include "../src/FastLED.h"

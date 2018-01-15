@@ -34,8 +34,8 @@ THE SOFTWARE.
 #define __INC_FASTSPI_LED2_H
 #endif
 
-#include "../src/FastLED/fastpin.h"
-#include "../src/FastLED/platforms/avr/fastpin_avr.h"
+#include "../src/fastpin.h"
+#include "../src/platforms/avr/fastpin_avr.h"
 
 #ifndef FASTPIN_FASTLED
 #undef __INC_FASTSPI_LED2_H

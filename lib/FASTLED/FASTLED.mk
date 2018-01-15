@@ -55,26 +55,23 @@ DMBS_BUILD_PROVIDED_MACROS +=
 $(foreach MANDATORY_VAR, $(DMBS_BUILD_MANDATORY_VARS), $(call ERROR_IF_UNSET, $(MANDATORY_VAR)))
 
 # FASTLED Library
-FASTLED_SRC := $(FASTLED_MODULE_PATH)/src/FastLED/FastLED.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/power_mgt.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/noise.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/wiring.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/lib8tion.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/hsv2rgb.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/colorutils.cpp
-FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/FastLED/bitswap.cpp
+FASTLED_SRC := $(FASTLED_MODULE_PATH)/src/FastLED.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/power_mgt.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/noise.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/wiring.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/lib8tion.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/hsv2rgb.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/colorutils.cpp
+FASTLED_SRC += $(FASTLED_MODULE_PATH)/src/bitswap.cpp
 
 # Compiler flags and sources
 SRC                += $(FASTLED_SRC)
 CC_FLAGS           += -DDMBS_MODULE_FASTLED
-CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/src/FastLED/
+CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/src
 CC_FLAGS           += -I$(FASTLED_MODULE_PATH)/include
 CC_FLAGS           += -include $(TIMER0_MODULE_PATH)/include/timer0.h
 CC_FLAGS           += -DFASTLED_NO_PINMAP -DFASTLED_NEED_YIELD -Dtimer0_millis=timer0_millis_count
-# TODO remove this workaround when PR is merged:
-# https://github.com/abcminiuser/dmbs/pull/27
-CC_FLAGS           += -DNEED_CXX_BITS
-#FastLED.cpp_FLAGS   = -DNEED_CXX_BITS
+FastLED.cpp_FLAGS   = -DNEED_CXX_BITS
 
 # Use c++11 standard
 CPP_STANDARD        = gnu++11
