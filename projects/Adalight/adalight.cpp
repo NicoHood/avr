@@ -26,6 +26,7 @@ THE SOFTWARE.
 #include <string.h>
 #include "timer0.h"
 #include "fastled.h"
+#include "fastpin.h"
 #include "usart.h"
 #include "board_leds.h"
 
@@ -196,10 +197,15 @@ static FILE UsartSerialStream;
 
 int main(void)
 {
+    // Blink Led
+    // LED_BUILTIN might be a data/clock pin for the LED strip on some AVRs.
+    // Make sure to select a different pin for error indicator then.
+    FastPin<LED_BUILTIN> pin;
+    pin.setOutput();
+
     // Initialize libraries and enable interrupts
     usart_init();
     timer0_init();
-    LED_INIT();
     sei();
 
     // Setup usart stream
@@ -254,7 +260,7 @@ int main(void)
         else if (ret == -1)
         {
             // Turn error led on
-            LED_ON();
+            pin.hi();
             previousTime = currentTime;
         }
         // Timeout
@@ -267,7 +273,7 @@ int main(void)
         // Turn error led off after one second
         if ((currentTime - previousTime) > 1000UL)
         {
-            LED_OFF();
+            pin.lo();
         }
     }
 }
