@@ -90,7 +90,7 @@ static int usb_cdc_serial_fputc(char c, FILE* stream)
 {
     TX_LED_ON();
     tx_led_count = TX_RX_LED_PULSE_MS;
-	return CDC_Device_SendByte(&VirtualSerial_CDC_Interface, c) ? _FDEV_ERR : 0;
+	return CDC_Device_SendByte(&VirtualSerial_CDC_Interface, c) ? _FDEV_ERR : c;
 }
 
 static int usb_cdc_serial_fgetc(FILE* stream)
