@@ -26,7 +26,7 @@ USART_BAUDRATE    = 9600
 #USART_BAUDRATE    = 500000
 
 # Include DMBS build script makefiles
-ROOT_PATH 	?= ../../
+ROOT_PATH 	?= ../../../../
 DMBS_PATH   ?= $(ROOT_PATH)/DMBS
 LIB_PATH    ?= $(ROOT_PATH)/lib
 
