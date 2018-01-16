@@ -21,9 +21,6 @@ LD_FLAGS     = -Werror
 # Only enable a selection of PCINTs to safe flash
 #PCINT_ENABLE += 6
 
-# USART speed
-USART_BAUDRATE = 2000000
-
 # Include DMBS build script makefiles
 ROOT_PATH 	?= ../../../../
 DMBS_PATH   ?= $(ROOT_PATH)/DMBS
