@@ -19,7 +19,7 @@ CC_FLAGS     = -Werror
 LD_FLAGS     = -Werror
 
 # Include DMBS build script makefiles
-ROOT_PATH 	?= ../../
+ROOT_PATH 	?= ../../../../
 DMBS_PATH   ?= $(ROOT_PATH)/DMBS
 LIB_PATH    ?= $(ROOT_PATH)/lib
 
