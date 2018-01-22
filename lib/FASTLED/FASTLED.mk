@@ -73,9 +73,6 @@ CC_FLAGS           += -include $(TIMER0_MODULE_PATH)/include/timer0.h
 CC_FLAGS           += -DFASTLED_NO_PINMAP -DFASTLED_NEED_YIELD -Dtimer0_millis=timer0_millis_count
 FastLED.cpp_FLAGS   = -DNEED_CXX_BITS
 
-# Use c++11 standard
-CPP_STANDARD        = gnu++11
-
 # Phony build targets for this module
 .PHONY: $(DMBS_BUILD_TARGETS)
 

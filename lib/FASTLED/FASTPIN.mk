@@ -54,9 +54,6 @@ CC_FLAGS           += -DDMBS_MODULE_FASTPIN
 CC_FLAGS           += -I$(FASTPIN_MODULE_PATH)/include
 CC_FLAGS           += -DFASTLED_NO_PINMAP
 
-# Use c++11 standard
-CPP_STANDARD        = gnu++11
-
 # Phony build targets for this module
 .PHONY: $(DMBS_BUILD_TARGETS)
 
