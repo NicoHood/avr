@@ -179,7 +179,7 @@ int adalight(void)
     else if ((currentTime - previousTime) > timeout)
     {
         // Clear leds and variables for a clean start
-        memset(myleds, 0x00, numLeds);
+        memset(myleds, 0x00, numLeds * 3);
         numPixel = 0;
         magicPos = 0;
         previousTime = 0;
