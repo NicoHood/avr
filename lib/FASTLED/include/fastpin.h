@@ -41,12 +41,24 @@ THE SOFTWARE.
 // Only works with libraries which use compile time pin options.
 #ifndef ARDUINO
 
+#ifndef INPUT
 #define INPUT 0x0
+#endif
+#ifndef OUTPUT
 #define OUTPUT 0x1
+#endif
+#ifndef INPUT_PULLUP
 #define INPUT_PULLUP 0x2
+#endif
+#ifndef LOW
 #define LOW 0x0
+#endif
+#ifndef HIGH
 #define HIGH 0x1
+#endif
+#ifndef TOGGLE
 #define TOGGLE 0x2
+#endif
 
 template <uint8_t pin, uint8_t mode>
 static inline void pinMode(void)
