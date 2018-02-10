@@ -25,7 +25,7 @@ THE SOFTWARE.
 #pragma once
 
 // Software version
-#define FASTPIN_VERSION 100
+#define FASTPIN_VERSION 110
 
 // Disable inclusion of FastLED led drivers
 #ifdef __INC_FASTSPI_LED2_H
@@ -36,6 +36,52 @@ THE SOFTWARE.
 
 #include "../src/fastpin.h"
 #include "../src/platforms/avr/fastpin_avr.h"
+
+// Arduino compatiblity layer.
+// Only works with libraries which use compile time pin options.
+#ifndef ARDUINO
+
+#define INPUT 0x0
+#define OUTPUT 0x1
+#define INPUT_PULLUP 0x2
+#define LOW 0x0
+#define HIGH 0x1
+#define TOGGLE 0x2
+
+template <uint8_t pin, uint8_t mode>
+static inline void pinMode(void)
+{
+    FastPin<pin> p;
+    if (mode == OUTPUT){
+        p.setOutput();
+    }
+    else if (mode == INPUT){
+        p.setInput();
+    }
+    else if (mode == INPUT_PULLUP){
+        p.setInput();
+        p.hi();
+    }
+}
+#define pinMode(pin, mode) pinMode<pin, mode>()
+
+template <uint8_t pin, uint8_t mode>
+static inline void digitalWrite(void)
+{
+    FastPin<pin> p;
+    if (mode == LOW){
+        p.lo();
+    }
+    else if (mode == HIGH){
+        p.hi();
+    }
+    else if (mode == TOGGLE){
+        p.toggle();
+    }
+}
+#define digitalWrite(pin, mode) digitalWrite<pin, mode>()
+
+#endif // ifndef ARDUINO
 
 #ifndef FASTPIN_FASTLED
 #undef __INC_FASTSPI_LED2_H
