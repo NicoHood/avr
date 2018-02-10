@@ -13,3 +13,6 @@
 [submodule "submodules/IRLremote"]
 	path = submodules/IRLremote
 	url = git@github.com:NicoHood/IRLremote.git
+[submodule "submodules/RCLSwitch"]
+	path = submodules/RCLSwitch
+	url = git@github.com:NicoHood/RCLSwitch.git
