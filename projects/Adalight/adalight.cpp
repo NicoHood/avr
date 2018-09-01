@@ -252,6 +252,7 @@ int main(void)
     // FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
     // FastLED.addLeds<DOTSTAR, DATA_PIN, CLOCK_PIN, RGB>(leds, NUM_LEDS);
 
+    // Startup sequence
     FastLED.showColor(CRGB::Red);
     delay(500);
     FastLED.showColor(CRGB::Green);

@@ -66,7 +66,7 @@ int usart_getchar(void)
         {
             ret = EOF;
         }
-        else{
+        else {
             ret = usart_buffer_rx[usart_buffer_rx_tail];
             usart_buffer_rx_tail = ((uint8_t)(usart_buffer_rx_tail + (uint8_t)1) % (uint8_t)USART_BUFFER_RX);
         }
@@ -84,7 +84,7 @@ int usart_peek(void)
         {
             ret = EOF;
         }
-        else{
+        else {
             ret = usart_buffer_rx[usart_buffer_rx_tail];
         }
     }
