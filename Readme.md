@@ -16,6 +16,8 @@ The purpose of this library is to use a clean and modular build system with libr
 - FastPin from FastLED usable without Led code (for faster pin access)
 - Extremely optimized PinChangeInterrupt library with compile-time optimization
 
+<a href="https://www.buymeacoffee.com/Mnwg9NrCK" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+
 ## Modules Overview
 
 The following modules are currently included:
